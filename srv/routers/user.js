@@ -128,7 +128,7 @@ router.post('/getAllusers', async (req,res)=>{
     // 
       // const skip =  (page - 1) * limit; // 查询的起点（偏移量）
       try {
-        let usersList = await User.find().skip((page - 1)*parseInt(limit)).limit(parseInt(limit)) // 分页查询
+        let usersList = await User.find().skip((page - 1)*parseInt(limit)).limit(parseInt(limit)).sort({_id:-1}) // 分页查询
         let count = await User.count()
         // let count = await News.count(where) // 获取符合条件的总数
         res.send({success:true,info:'查询成功',data:usersList,count});

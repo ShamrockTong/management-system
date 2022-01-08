@@ -12,6 +12,7 @@ var goodslistSchema = mongoose.Schema({
     commentsNumber:String,
     addtime:String,
     upOrdown:Boolean,
+    addTime:String
 },{
     timestamps: false // 设置为true会自动的帮我们添加及维护两个字段 createdAt  updatedAt
 });

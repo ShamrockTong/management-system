@@ -37,6 +37,11 @@
         width="180">
       </el-table-column>
       <el-table-column
+        prop="addTime"
+        label="添加时间"
+        width="200">
+      </el-table-column>
+      <el-table-column
         prop="action"
         label="操作"
         width="180">
@@ -123,12 +128,15 @@
                           </el-option>
                         </el-select>
                   </el-form-item>
-                  <el-form-item label="售价" prop="mallPcPrice">
+                  <el-form-item label="售价 / 元" prop="mallPcPrice">
                     <el-input v-model="editform.mallPcPrice"></el-input>
                   </el-form-item>
 
-                  <el-form-item label="市场价" prop="marketPrice">
+                  <el-form-item label="市场价 / 元" prop="marketPrice">
                     <el-input v-model="editform.marketPrice"></el-input>
+                  </el-form-item>
+                  <el-form-item label="添加时间" prop="addTime">
+                    <el-input v-model="editform.addTime" disabled></el-input>
                   </el-form-item>
                 </el-form>
 
@@ -147,6 +155,7 @@
 <script>
 import Axios from 'axios'
 import log from '@/libs/util.log'
+import dayjs, { Dayjs } from 'dayjs'
 export default {
   name: 'goodslist',
   data(){
@@ -168,7 +177,8 @@ export default {
         category : '',
         masterImg : '',
         mallPcPrice : '',
-        marketPrice : ''
+        marketPrice : '',
+        addTime:''
       },
       form: {
         name1: '',
@@ -294,11 +304,13 @@ export default {
         if (res) {
       //     // 才去执行提交
           console.log(this.form)
+          const addTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
           const postData = {
             name1: this.form.name1,
             category: this.form.category,
             mallPcPrice: this.form.mallPcPrice,
             marketPrice: this.form.marketPrice,
+            addTime:addTime,
           }
           console.log('postData', postData)
 
