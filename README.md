@@ -1,1 +1,3 @@
-# management-system
+# management-system 电商后台管理系统
+项目名称：电商后台管理系统
+项目地址：http://120.79.23.196:8080/
