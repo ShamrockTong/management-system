@@ -24,7 +24,6 @@ router.post('/addGoods', async (req,res)=>{
         res.send( {success:false,info:'未知错误 请于网站管理员联系'});
     }
 
-
 })
 
 // 获取商品列表
@@ -268,4 +267,56 @@ router.post('/searchUpGoods', async (req,res)=>{
     }
 
 })
+
+// 库存查询编辑
+router.post('/getGoodsStorage', async (req,res)=>{
+  let { page,limit} = req.body;
+   page = page || 1; // 当前第几页
+   limit = limit || 10; // 单页返回的条数限制
+
+    // 初始化 查询条件      
+    // let where = {  }
+    // 按名字查找
+    // if(title)  where.title = title
+    let where = {  }
+  // 
+    const skip =  (page - 1) * limit; // 查询的起点（偏移量）
+    try {
+      // let goodsList = await GoodsList.find(where,{},{skip,limit}).sort({_id:-1}) // 分页查询
+      let goodsList = await GoodsList.find(where).skip((page - 1)*parseInt(limit)).limit(parseInt(limit)).sort({_id:-1})
+      let count = await GoodsList.count(where) // 获取符合条件的总数
+       // 分页查询
+      // let count = await News.count(where) // 获取符合条件的总数
+      res.send({success:true,info:'查询成功',data:goodsList,count});
+    }catch(e){
+        console.log(e)
+      res.send({success:false,info:'获取失败'})
+    }
+
+})
+
+router.post('/updateGoodsStorage', async(req,res)=>{
+
+
+  const { id,storage} = req.body;
+  // console.log('req.body',req.body);
+  console.log(id,storage);
+  // // if(!username ) return res.send({success:false,info:'请输入正确的用户名'});
+
+  const goods = await GoodsList.findOne({ id })
+  // // if(!user)  return res.send({success:false,info:'该用户不存在'});
+  console.log('goods',goods);
+  let updateData = {storage:storage};
+
+  try{
+
+      await GoodsList.updateOne(goods,updateData)
+      res.send({success:true,info:'更新成功'});
+      
+
+  }catch(e){
+      res.send({success:false,info:'更新失败'});
+  }
+})
+
 module.exports = router;

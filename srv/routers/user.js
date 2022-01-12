@@ -54,7 +54,7 @@ router.post('/login', async (req,res)=>{
     const { username,password } = req.body;
     console.log(username,password)
     if(!username ) return res.send({success:false,info:'请输入正确的用户名'});
-    if(!password ) return res.send({success:false,info:'请输入正确的用户名'});
+    if(!password ) return res.send({success:false,info:'请输入正确的密码'});
 
     try {
         const user = await User.findOne({ username });  

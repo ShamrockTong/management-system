@@ -15,14 +15,19 @@ import { mapState, mapActions } from 'vuex'
 export default {
   data(){
     return{
-      username:''
+      // username:''
     }
   },
   created(){
      const data = JSON.parse(localStorage.getItem('userInfo'))
       if (data && data.name){
-        this.username = data.name
+          this.$store.dispatch('setName',data.name)
       }
+      // this.getName()
+      // this.$nextTick(function(){
+      //   console.log(this.$store.getters.getName);
+        // this.username = this.$store.getters.getName
+      // })
   }
   ,
   destroyed(){
@@ -32,7 +37,10 @@ export default {
   computed: {
     ...mapState('d2admin/user', [
       'info'
-    ])
+    ]),
+    username:function(){
+      return this.$store.getters.getName
+    }
   },
   methods: {
     ...mapActions('d2admin/account', [
@@ -49,10 +57,13 @@ export default {
     // getName(){
     //   const data = JSON.parse(localStorage.getItem('userInfo'))
     //   if (data && data.name){
-    //     this.username = data.name
+    //     this.$nextTick(function(){
+    //       this.username = data.name
+    //       console.log('nexttick');
+    //     })
     //   }
-    //   console.log(data);
-    //   document.querySelector('#username').innerHTML = data.name
+    //   // console.log(data);
+    //   // document.querySelector('#username').innerHTML = data.name
     // },
     clearName(){
       localStorage.removeItem('userInfo')

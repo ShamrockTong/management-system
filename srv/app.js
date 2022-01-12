@@ -21,10 +21,12 @@ app.use(urlencodedParser)
 // 各个路由的导入
 const userRouter = require('./routers/user');
 const goodsListRouter = require('./routers/goodslist');
+const ordersRouter = require('./routers/orderslist')
 
 // 前台用户流程
 app.use('/api',userRouter);
 app.use('/api',goodsListRouter);
+app.use('/api',ordersRouter)
 
 const port = 3000;
 

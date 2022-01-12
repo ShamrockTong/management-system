@@ -201,8 +201,8 @@ export default {
                     }
                       document.cookie = `name=${res.data.data[0].name}`
                     localStorage.setItem('userInfo',JSON.stringify(data));
+                this.$store.dispatch("setName", res.data.data[0].name)
                 })
-
                 // webStorage存储技术
 
                 this.$router.replace(this.$route.query.redirect || '/')
@@ -235,6 +235,7 @@ export default {
       const data = JSON.parse(localStorage.getItem('userInfo'))
       if (data && data.name){
         this.username = data.name
+        
       }
     }
   }

@@ -67,6 +67,33 @@ const frameIn = [
         },
         component: _import('demo/goodsdownList')
       },
+      {
+        path: 'orderslist',
+        name: 'orderslist',
+        meta: {
+          title: '订单列表',
+          auth: true
+        },
+        component: _import('demo/orderslist')
+      },
+      {
+        path: 'addorder',
+        name: 'addorder',
+        meta: {
+          title: '添加订单',
+          auth: true
+        },
+        component: _import('demo/addorder')
+      },
+      {
+        path: 'storagelist',
+        name: 'storagelist',
+        meta: {
+          title: '',
+          auth: true
+        },
+        component: _import('demo/storagelist')
+      },
       // 系统 前端日志
       {
         path: 'log',

@@ -1,9 +1,30 @@
 <template>
   <div class="d2-page-cover">
     <h1 class="d2-page-cover__sub-title">欢迎使用</h1>
+    <h1>{{time}}</h1>
   </div>
 </template>
+<script>
+import dayjs from 'dayjs'
 
+export default {
+  data(){
+    return {
+      time: dayjs().format('HH:mm:ss'),
+    }
+  },
+  mounted () {
+    this.timeInterval = setInterval(() => {
+      this.refreshTime()
+    }, 1000)
+  },
+  methods:{
+    refreshTime(){
+      this.time = dayjs().format('HH:mm:ss')
+    }
+  }
+}
+</script>
 <style lang="scss" scoped>
 .d2-page-cover {
   @extend %full;

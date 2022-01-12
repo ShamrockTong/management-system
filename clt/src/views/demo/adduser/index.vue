@@ -64,7 +64,7 @@ export default {
             { required: true, message: '请选择用户名', trigger: 'blur' }
           ],
           uuid: [
-            { required: true, message: '请选择用户名', trigger: 'blur' }
+            { required: true, message: '请选择权限', trigger: 'blur' }
           ],
         }
       };
