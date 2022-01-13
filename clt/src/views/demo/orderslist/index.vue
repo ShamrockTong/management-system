@@ -88,7 +88,7 @@
             <el-input v-model="detailsform.id" disabled></el-input>
           </el-form-item>
           <el-form-item label="商品总价" prop="totalPrice">
-            <el-input v-model="detailsform.totalPrice"></el-input>
+            <el-input v-model.number="detailsform.totalPrice"></el-input>
           </el-form-item>
           <el-form-item label="订单状态" prop="orderstatus">
             <el-select v-model="detailsform.orderstatus" placeholder="请选择">
@@ -119,7 +119,7 @@
             <el-input v-model="detailsform.address"></el-input>
           </el-form-item>
           <el-form-item label="联系电话" prop="phonenum">
-            <el-input v-model="detailsform.phonenum"></el-input>
+            <el-input v-model.number="detailsform.phonenum"></el-input>
           </el-form-item>
           <el-form-item label="邮政编码" prop="zipCode">
             <el-input v-model="detailsform.zipCode"></el-input>
@@ -235,8 +235,11 @@ export default {
         address: [
           { required: true, message: "请输入收件人地址", trigger: "blur" },
         ],
+        ordersTime: [
+          { required: true, message: "请输入下单时间", trigger: "change" },
+        ],
         phonenum: [
-          { required: true, message: "请输入收件人电话号码", trigger: "blur" },
+          { required: true, message: "请输入收件人电话号码", trigger: "blur"}
         ],
         address: [
           { required: true, message: "请输入收件人地址", trigger: "blur" },
@@ -316,9 +319,20 @@ export default {
           // console.log('this.detailsform.category',this.detailsform.category);
           // console.log('this.detailsform',this.detailsform);
           // id=lastID,totalPrice,customer,courier,courierNumber,orderstatus,addTime,goodsDetails,recipient,address,phonenum,zipCode
+          if (
+            this.detailsform.totalPrice < 0 ||
+            this.detailsform.totalPrice < 0 ||
+            isNaN(this.detailsform.totalPrice) ||
+            isNaN(this.detailsform.totalPrice)
+          )
+            return this.$message.error("总价不能小于0或者非数字！");
+          const totalPrice =
+            this.detailsform.totalPrice % 1 === 0
+              ? this.detailsform.totalPrice * 1
+              : Math.round(this.detailsform.totalPrice * 100) / 100;
           const postData = {
             id: this.detailsform.id,
-            totalPrice: this.detailsform.totalPrice,
+            totalPrice: totalPrice.toFixed(2),
             customer: this.detailsform.customer,
             courier: this.detailsform.courier,
             courierNumber: this.detailsform.courierNumber,

@@ -34,6 +34,8 @@
       <el-table-column prop="name1" label="商品名称"> </el-table-column>
       <el-table-column prop="category" label="分类" width="180">
       </el-table-column>
+      <el-table-column prop="mallPcPrice" label="售价" width="180">
+      </el-table-column>
       <el-table-column prop="addTime" label="添加时间" width="200">
       </el-table-column>
       <el-table-column prop="action" label="操作" width="180">
@@ -310,14 +312,24 @@ export default {
       this.$refs.form.validate(async (res, wtf) => {
         if (res) {
           //     // 才去执行提交
+          if (
+            this.form.mallPcPrice < 0 ||
+            this.form.marketPrice < 0 ||
+            isNaN(this.form.mallPcPrice) ||
+            isNaN(this.form.marketPrice)
+          )
+            return this.$message.error("价格不能小于0或者非数字！");
           console.log(this.form);
           const addTime = dayjs().format("YYYY-MM-DD HH:mm:ss");
+           const mallPcPrice = this.form.mallPcPrice %1 === 0 ? (this.form.mallPcPrice*1) : Math.round(this.form.mallPcPrice * 100 ) /100
+          const marketPrice = this.form.marketPrice %1 === 0 ? (this.form.marketPrice*1): Math.round(this.form.marketPrice * 100 ) /100
           const postData = {
             name1: this.form.name1,
             category: this.form.category,
-            mallPcPrice: this.form.mallPcPrice,
-            marketPrice: this.form.marketPrice,
+            mallPcPrice: mallPcPrice.toFixed(2),
+            marketPrice: marketPrice.toFixed(2),
             addTime: addTime,
+            storage:1
           };
           console.log("postData", postData);
 
@@ -346,15 +358,22 @@ export default {
     onEdit() {
       this.$refs.editform.validate(async (res, wtf) => {
         if (res) {
-          console.log(this.curEditRow);
-          console.log("this.editform.category", this.editform.category);
-          console.log("this.editform", this.editform);
+          if (
+            this.editform.mallPcPrice < 0 ||
+            this.editform.marketPrice < 0 ||
+            isNaN(this.editform.mallPcPrice) ||
+            isNaN(this.editform.marketPrice)
+          )
+            return this.$message.error("价格不能小于0或者非数字！");
+          
+          const mallPcPrice = this.editform.mallPcPrice %1 === 0 ? (this.editform.mallPcPrice*1) : Math.round(this.editform.mallPcPrice * 100 ) /100
+          const marketPrice = this.editform.marketPrice %1 === 0 ? (this.editform.marketPrice*1): Math.round(this.editform.marketPrice * 100 ) /100
           const postData = {
             id: this.editform.id,
             name1: this.editform.name1,
             category: this.editform.category,
-            mallPcPrice: this.editform.mallPcPrice,
-            marketPrice: this.editform.marketPrice,
+            mallPcPrice: mallPcPrice.toFixed(2),
+            marketPrice: marketPrice.toFixed(2)
           };
 
           // const res = await this.$api.post('/build/update', postData)

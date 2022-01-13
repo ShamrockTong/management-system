@@ -8,13 +8,25 @@
       class="demo-userForm"
     >
       <el-form-item label="账号" prop="username" style="width: 500px">
-        <el-input v-model="userForm.username"></el-input>
+        <el-input
+          v-model="userForm.username"
+          maxlength="10"
+          show-word-limit
+        ></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password" style="width: 500px">
-        <el-input v-model="userForm.password"></el-input>
+        <el-input
+          v-model="userForm.password"
+          maxlength="20"
+          show-word-limit
+        ></el-input>
       </el-form-item>
       <el-form-item label="用户名" prop="name" style="width: 500px">
-        <el-input v-model="userForm.name"></el-input>
+        <el-input
+          v-model="userForm.name"
+          maxlength="10"
+          show-word-limit
+        ></el-input>
       </el-form-item>
       <el-form-item label="权限定位" prop="uuid" style="width: 500px">
         <el-select v-model="userForm.uuid" placeholder="请选择">
@@ -64,7 +76,7 @@ export default {
         username: [{ required: true, message: "请输入账号", trigger: "blur" }],
         password: [{ required: true, message: "请选择密码", trigger: "blur" }],
         name: [{ required: true, message: "请选择用户名", trigger: "blur" }],
-        uuid: [{ required: true, message: "请选择权限", trigger: "blur" }],
+        uuid: [{ required: true, message: "请选择权限", trigger: "change" }],
       },
     };
   },
@@ -76,6 +88,8 @@ export default {
           //     // 才去执行提交
           console.log(this.userForm);
           const regTime = dayjs().format("YYYY-MM-DD HH:mm:ss");
+          const reg = new RegExp("[\\u4E00-\\u9FFF]+","g");
+          if(reg.test(this.userForm.username)) return this.$message.error("账号不能包含汉字！") 
           const postData = {
             username: this.userForm.username,
             password: this.userForm.password,

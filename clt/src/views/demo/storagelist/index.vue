@@ -267,8 +267,13 @@ export default {
     AddEdit() {
       this.$refs.editform.validate(async (res, wtf) => {
         if (res) {
-          if (this.editform.add < 1 || !this.editform.add)
-            return this.$message.error("入库数量不能小于0！");
+          if (
+            this.editform.add < 1 ||
+            !this.editform.add ||
+            isNaN(this.editform.add) ||
+            this.editform.add % 1 != 0
+          )
+            return this.$message.error("入库数量不能小于0或者非数字或小数！");
           if (!this.goodsStorage) this.goodsStorage = 0;
           const postData = {
             id: this.editform.id,
@@ -301,8 +306,13 @@ export default {
     ReduceEdit() {
       this.$refs.editform.validate(async (res, wtf) => {
         if (res) {
-          if (this.editform.reduce < 1 || !this.editform.reduce)
-            return this.$message.error("出库不能小于0！");
+          if (
+            this.editform.reduce < 1 ||
+            !this.editform.reduce ||
+            isNaN(this.editform.reduce) ||
+            this.editform.reduce % 1 != 0
+          )
+            return this.$message.error("出库不能小于0或者非数字或小数！");
           if (!this.goodsStorage) this.goodsStorage = 0;
           let postData = {
             id: this.editform.id,

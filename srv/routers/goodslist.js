@@ -11,13 +11,13 @@ router.post('/addGoods', async (req,res)=>{
   let lastone = await GoodsList.find().sort({_id:-1}).limit(1)
   let lastID = lastone[0].id * 1+ 1 
   console.log(lastID);
-  const {id=lastID,name1,category,mallPcPrice,marketPrice,addTime} = req.body;
+  const {id=lastID,name1,category,mallPcPrice,marketPrice,addTime,storage} = req.body;
     // // 数据过滤
     if(!name1||!category||!mallPcPrice||!marketPrice) return res.send( {success:false,info:'请填写必要参数'});
 
     // 添加入库
     try{
-        await GoodsList.create({id,name1,category,mallPcPrice,marketPrice,addTime})
+        await GoodsList.create({id,name1,category,mallPcPrice,marketPrice,addTime,storage})
         res.send({success:true,info:'添加成功'})
 
     } catch(e) {
