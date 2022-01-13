@@ -7,20 +7,22 @@
     </div>
     <div
       class="page-login--layer page-login--layer-time"
-      flex="main:center cross:center">
+      flex="main:center cross:center"
+    >
       <!-- {{time}} -->
     </div>
     <div class="page-login--layer">
       <div
         class="page-login--content"
-        flex="dir:top main:justify cross:stretch box:justify">
+        flex="dir:top main:justify cross:stretch box:justify"
+      >
         <div class="page-login--content-header">
-          <p class="page-login--content-header-motto">
-          </p>
+          <p class="page-login--content-header-motto"></p>
         </div>
         <div
           class="page-login--content-main"
-          flex="dir:top main:center cross:center">
+          flex="dir:top main:center cross:center"
+        >
           <!-- logo -->
           <h1>电商通用后台管理系统</h1>
           <!-- form -->
@@ -31,12 +33,14 @@
                 label-position="top"
                 :rules="rules"
                 :model="formLogin"
-                size="default">
+                size="default"
+              >
                 <el-form-item prop="username">
                   <el-input
                     type="text"
                     v-model="formLogin.username"
-                    placeholder="用户名">
+                    placeholder="用户名"
+                  >
                     <i slot="prepend" class="fa fa-user-circle-o"></i>
                   </el-input>
                 </el-form-item>
@@ -44,7 +48,8 @@
                   <el-input
                     type="password"
                     v-model="formLogin.password"
-                    placeholder="密码">
+                    placeholder="密码"
+                  >
                     <i slot="prepend" class="fa fa-keyboard-o"></i>
                   </el-input>
                 </el-form-item>
@@ -62,106 +67,101 @@
                   size="default"
                   @click="submit"
                   type="primary"
-                  class="button-login">
+                  class="button-login"
+                >
                   登录
                 </el-button>
               </el-form>
             </el-card>
-          
+
             <!-- quick login -->
           </div>
         </div>
-        <div class="page-login--content-footer">
-          
-        </div>
+        <div class="page-login--content-footer"></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import dayjs from 'dayjs'
-import { mapActions } from 'vuex'
-import localeMixin from '@/locales/mixin.js'
-import axios from 'axios'
-import service from '@/api/service.js'
-import Axios from 'axios'
+import dayjs from "dayjs";
+import { mapActions } from "vuex";
+import localeMixin from "@/locales/mixin.js";
+import axios from "axios";
+import service from "@/api/service.js";
+import Axios from "axios";
 
 export default {
-  mixins: [
-    localeMixin
-  ],
-  data () {
+  mixins: [localeMixin],
+  data() {
     return {
       timeInterval: null,
-      username:'',
-      time: dayjs().format('HH:mm:ss'),
+      username: "",
+      time: dayjs().format("HH:mm:ss"),
       // 快速选择用户
       dialogVisible: false,
       users: [
         {
-          name: 'Admin123',
-          username: 'admin123',
-          password: 'admin123'
+          name: "Admin123",
+          username: "admin123",
+          password: "admin123",
         },
         {
-          name: 'Editor',
-          username: 'editor',
-          password: 'editor'
+          name: "Editor",
+          username: "editor",
+          password: "editor",
         },
         {
-          name: 'User1',
-          username: 'user1',
-          password: 'user1'
-        }
+          name: "User1",
+          username: "user1",
+          password: "user1",
+        },
       ],
       // 表单
       formLogin: {
-        username: '',
-        password: '',
-        code: 'v9am'
+        username: "",
+        password: "",
+        code: "v9am",
       },
       // 表单校验
       rules: {
         username: [
           {
             required: true,
-            message: '请输入用户名',
-            trigger: 'blur'
-          }
+            message: "请输入用户名",
+            trigger: "blur",
+          },
         ],
         password: [
           {
             required: true,
-            message: '请输入密码',
-            trigger: 'blur'
-          }
+            message: "请输入密码",
+            trigger: "blur",
+          },
         ],
         code: [
           {
             required: true,
-            message: '请输入验证码',
-            trigger: 'blur'
-          }
-        ]
-      }
-    }
+            message: "请输入验证码",
+            trigger: "blur",
+          },
+        ],
+      },
+    };
   },
-  mounted () {
+  mounted() {
     this.timeInterval = setInterval(() => {
-      this.refreshTime()
-    }, 1000)
+      this.refreshTime();
+    }, 1000);
   },
-  beforeDestroy () {
-    clearInterval(this.timeInterval)
+  beforeDestroy() {
+    clearInterval(this.timeInterval);
     // this.getName()
   },
   methods: {
-    ...mapActions('d2admin/account', [
-      'login'
-    ]),
-    refreshTime () {
-      this.time = dayjs().format('HH:mm:ss')
+    ...mapActions("d2admin/account", ["login"]),
+    refreshTime() {
+      this.time = dayjs().format("HH:mm:ss");
     },
     /**
      * @description 接收选择一个用户快速登录的事件
@@ -171,8 +171,8 @@ export default {
      * @description 提交表单
      */
     // 提交登录信息
-    
-    submit () {
+
+    submit() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           // 登录
@@ -180,72 +180,74 @@ export default {
           // 具体需要传递的数据请自行修改代码
           this.login({
             username: this.formLogin.username,
-            password: this.formLogin.password
-          }).then(res=> {
-              // 重定向对象不存在则返回顶层路径
-              console.log('res',res);
-              if(res){
-                this.$message.success('登陆成功')
+            password: this.formLogin.password,
+          }).then((res) => {
+            // 重定向对象不存在则返回顶层路径
+            console.log("res", res);
+            if (res) {
+              this.$message.success("登陆成功");
 
-                const loginData = {
-                    username: this.formLogin.username,
-                    // password: this.formLogin.password
-                }
-                console.log(loginData);
-                // let date = new Date();
-                // date.setDate(date.getDate() + 7)
-                Axios.post('http://localhost:3000/api/getUserName',loginData).then(res=>{
-                  // console.log('this.formLogin.username',res.data.data[0].name);
-                    const data = {
-                      name:res.data.data[0].name
-                    }
-                      document.cookie = `name=${res.data.data[0].name}`
-                    localStorage.setItem('userInfo',JSON.stringify(data));
-                this.$store.dispatch("setName", res.data.data[0].name)
-                })
-                // webStorage存储技术
+              const loginData = {
+                username: this.formLogin.username,
+                // password: this.formLogin.password
+              };
+              // console.log(loginData);
+              // let date = new Date();
+              // date.setDate(date.getDate() + 7)
+              // Axios.post(
+              //   "http://localhost:3000/api/getUserName",
+              //   loginData
+              // ).then((res) => {
+              //   // console.log('this.formLogin.username',res.data.data[0].name);
+              //   // const data = {
+              //   //   name: res.data.data[0].name,
+              //   // };
+              //   // document.cookie = `name=${res.data.data[0].name}`;
+              //   // localStorage.setItem("userInfo", JSON.stringify(data));
+              //   // this.$store.dispatch("setName", res.data.data[0].name);
+              // });
+              // webStorage存储技术
 
-                this.$router.replace(this.$route.query.redirect || '/')
-              }else{
-                this.$message.error('账号或密码错误')
-              }
-              // console.log('登陆成功 in page');
-            })
+              this.$router.replace(this.$route.query.redirect || "/");
+            } else {
+              this.$message.error("账号或密码错误");
+            }
+            // console.log('登陆成功 in page');
+          });
 
-        // axios.post('http://localhost:3000/api/login', {
-        //         username: this.formLogin.username,
-        //         password: this.formLogin.password
-        //     }).then( (res)=> {
-        //     if(res.data.success){
-        //         console.log('登录成功');
-                // this.$router.replace(this.$route.query.redirect || '/')
-        //     }else{
-        //         console.log('登陆失败，账号密码错误');
-        //     }
-        //     }).catch(function (error) {
-        //         console.log(error);
-        //     });
+          // axios.post('http://localhost:3000/api/login', {
+          //         username: this.formLogin.username,
+          //         password: this.formLogin.password
+          //     }).then( (res)=> {
+          //     if(res.data.success){
+          //         console.log('登录成功');
+          // this.$router.replace(this.$route.query.redirect || '/')
+          //     }else{
+          //         console.log('登陆失败，账号密码错误');
+          //     }
+          //     }).catch(function (error) {
+          //         console.log(error);
+          //     });
         } else {
           // 登录表单校验失败
-          this.$message.error('请输入账号或密码')
+          this.$message.error("请输入账号或密码");
         }
-      })
+      });
     },
-    getName(){
-      const data = JSON.parse(localStorage.getItem('userInfo'))
-      if (data && data.name){
-        this.username = data.name
-        
+    getName() {
+      const data = JSON.parse(localStorage.getItem("userInfo"));
+      if (data && data.name) {
+        this.username = data.name;
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss">
 .page-login {
   @extend %unable-select;
-  $backgroundColor: #F0F2F5;
+  $backgroundColor: #f0f2f5;
   // ---
   background-color: $backgroundColor;
   height: 100%;
@@ -359,7 +361,7 @@ export default {
       color: $color-text-normal;
       a {
         color: $color-text-normal;
-        margin: 0 .5em;
+        margin: 0 0.5em;
         &:hover {
           color: $color-text-main;
         }

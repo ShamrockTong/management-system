@@ -6,6 +6,8 @@ const _import = require('@/libs/util.import.' + process.env.NODE_ENV)
 /**
  * 在主框架内显示
  */
+
+
 const frameIn = [
   {
     path: '/',
@@ -17,7 +19,8 @@ const frameIn = [
         path: 'index',
         name: 'index',
         meta: {
-          auth: true
+          auth: true,
+          roles: ['editor-uuid', 'user1-uuid','admin-uuid']
         },
         component: _import('system/index')
       },
@@ -27,7 +30,8 @@ const frameIn = [
         name: 'goodslist',
         meta: {
           title: '商品查询',
-          auth: true
+          auth: true,
+          roles: ['editor-uuid', 'user1-uuid','admin-uuid']
         },
         component: _import('demo/goodslist')
       },
@@ -36,7 +40,8 @@ const frameIn = [
         name: 'userslist',
         meta: {
           title: '用户信息',
-          auth: true
+          auth: true,
+          roles: ['admin-uuid']
         },
         component: _import('demo/userslist')
       },
@@ -45,7 +50,8 @@ const frameIn = [
         name: 'adduser',
         meta: {
           title: '用户添加',
-          auth: true
+          auth: true,
+          roles: ['admin-uuid']
         },
         component: _import('demo/adduser')
       },
@@ -54,7 +60,8 @@ const frameIn = [
         name: 'goodsupordown',
         meta: {
           title: '商品上下架',
-          auth: true
+          auth: true,
+          roles: ['editor-uuid','admin-uuid']
         },
         component: _import('demo/goodsupordown')
       },
@@ -63,7 +70,8 @@ const frameIn = [
         name: 'goodsdownList',
         meta: {
           title: '已上架商品',
-          auth: true
+          auth: true,
+          roles: ['editor-uuid', 'user1-uuid','admin-uuid']
         },
         component: _import('demo/goodsdownList')
       },
@@ -72,7 +80,8 @@ const frameIn = [
         name: 'orderslist',
         meta: {
           title: '订单列表',
-          auth: true
+          auth: true,
+          roles: ['editor-uuid','admin-uuid']
         },
         component: _import('demo/orderslist')
       },
@@ -81,7 +90,8 @@ const frameIn = [
         name: 'addorder',
         meta: {
           title: '添加订单',
-          auth: true
+          auth: true,
+          roles: ['editor-uuid','admin-uuid']
         },
         component: _import('demo/addorder')
       },
@@ -89,8 +99,9 @@ const frameIn = [
         path: 'storagelist',
         name: 'storagelist',
         meta: {
-          title: '',
-          auth: true
+          title: '库存查询编辑',
+          auth: true,
+          roles: ['editor-uuid','admin-uuid']
         },
         component: _import('demo/storagelist')
       },
@@ -130,7 +141,11 @@ const frameOut = [
   {
     path: '/login',
     name: 'login',
-    component: _import('system/login')
+    meta:{
+      // roles: ['editor-uuid', 'user1-uuid','admin-uuid',null,undefined,'']
+      // auth: true
+    },
+    component: _import('system/login'),
   }
 ]
 
@@ -141,6 +156,9 @@ const errorPage = [
   {
     path: '*',
     name: '404',
+    meta:{
+      // roles: ['editor-uuid', 'user1-uuid','admin-uuid']
+    },
     component: _import('system/error/404')
   }
 ]

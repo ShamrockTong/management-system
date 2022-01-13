@@ -18,13 +18,14 @@
       >
     </template>
 
-    <!-- 底插槽 @input.native="searchRes($event.target.value)" -->
+    <!-- 底插槽  -->
     <div slot="footer">
       <el-pagination
         background
-        layout="prev, pager, next"
+        layout="prev, pager, next,jumper"
         :page-size="limit"
         :total="total"
+        :current-page="this.page"
         @current-change="handlePageChange"
       />
     </div>
@@ -406,6 +407,7 @@ export default {
 
     handlePageChange(res) {
       this.page = res;
+      console.log(res);
       this.getAllList();
     },
 

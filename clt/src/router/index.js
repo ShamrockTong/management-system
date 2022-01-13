@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import { Message } from 'element-ui';
 
 // 进度条
 import NProgress from 'nprogress'
@@ -10,6 +11,7 @@ import util from '@/libs/util.js'
 
 // 路由数据
 import routes from './routes'
+import { stop } from 'pretty-error';
 
 // fix vue-router NavigationDuplicated
 const VueRouterPush = VueRouter.prototype.push
@@ -33,6 +35,17 @@ const router = new VueRouter({
  * 权限验证
  */
 router.beforeEach(async (to, from, next) => {
+//   const role = util.cookies.get('uuid')
+//   console.log('role',role);
+//   if (to.meta.roles.includes(role)) {
+//     next()
+// } else {
+//   // alert('你没有权限')
+//     // next({path: '/123'})
+//     Message.warning("你没有权限");
+//     // next({path: '*'})
+//     // stop()
+// }
   // 确认已经加载多标签页数据 https://github.com/d2-projects/d2-admin/issues/201
   await store.dispatch('d2admin/page/isLoaded')
   // 确认已经加载组件尺寸设置 https://github.com/d2-projects/d2-admin/issues/198

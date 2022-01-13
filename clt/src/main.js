@@ -39,5 +39,9 @@ new Vue({
     this.$store.commit('d2admin/ua/get')
     // 初始化全屏监听
     this.$store.dispatch('d2admin/fullscreen/listen')
+     // 设置侧边栏菜单
+     this.$store.commit('d2admin/menu/asideSet', menuAside)
+    // 设置侧边栏菜单
+    this.$store.commit('d2admin/menu/asideSet', menuAside)
   }
 }).$mount('#app')

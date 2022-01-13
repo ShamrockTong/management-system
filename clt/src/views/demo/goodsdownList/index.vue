@@ -22,6 +22,7 @@
         layout="prev, pager, next"
         :page-size="limit"
         :total="total"
+        :current-page="this.page"
         @current-change="handlePageChange"
       />
     </div>
