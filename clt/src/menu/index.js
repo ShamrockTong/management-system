@@ -49,6 +49,13 @@ export const menuHeader = supplementPath([
       { path: '/storagelist', title: '库存查询编辑' ,icon:'th'},
       // { path: '/addorder', title: '订单添加' },
     ]
+  },
+  {
+    title: '注册码',
+    icon: 'cube',
+    children: [
+      { path: '/regcodelist', title: '注册码管理' ,icon:'th'},
+    ]
   }
 ])
 
@@ -81,10 +88,17 @@ export const menuAside = supplementPath([
   },
   {
     title: '库存管理',
-    icon: 'folder-o',
+    icon: 'cube',
     children: [
       { path: '/storagelist', title: '库存查询编辑' ,icon:'th'},
       // { path: '/addorder', title: '订单添加' },
+    ]
+  },
+  {
+    title: '注册码',
+    icon: 'check',
+    children: [
+      { path: '/regcodelist', title: '注册码管理' ,icon:'registered'},
     ]
   }
 ])

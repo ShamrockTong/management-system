@@ -165,7 +165,7 @@ export default {
   },
   methods: {
     reload() {
-      this.page = 1;
+      // this.page = 1;
       this.limit = 10;
       this.getAllList();
       this.$message.success("刷新成功");

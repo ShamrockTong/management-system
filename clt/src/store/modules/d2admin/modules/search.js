@@ -50,6 +50,7 @@ export default {
       }
       push(menu)
       state.pool = pool
+      console.log('menu', state.pool);
     }
   }
 }

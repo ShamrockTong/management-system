@@ -260,14 +260,10 @@ export default {
   beforeUpdate() {},
   methods: {
     reload() {
-      this.page = 1;
+      // this.page = 1;
       this.limit = 10;
       this.getAllList();
       this.$message.success("刷新成功");
-    },
-    fuck(res) {
-      console.log(`${res} is fired`);
-      this.editform.name1 = res;
     },
     addNew() {
       this.dialogVisible = true;
@@ -397,8 +393,6 @@ export default {
         }
       });
     },
-    preView() {},
-    remove() {},
     handleClose(done) {
       // 在关闭之前 清空表单
       this.$refs.editform.resetFields(); // 重置表单

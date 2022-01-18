@@ -73,13 +73,68 @@
                 </el-button>
               </el-form>
             </el-card>
-
+            <p class="page-login--options" flex="main:justify cross:center">
+              <span></span>
+              <span @click="dialogVisible = true"
+                ><d2-icon name="address-card-o" /> 注册用户</span
+              >
+            </p>
             <!-- quick login -->
           </div>
         </div>
         <div class="page-login--content-footer"></div>
       </div>
     </div>
+
+    <!-- // 注册 -->
+    <el-dialog
+      title="注册"
+      :visible.sync="dialogVisible"
+      width="440px"
+      :before-close="addHandleClose"
+    >
+      <div>
+        <el-form
+          ref="formReg"
+          :rules="regRules"
+          :model="formReg"
+          label-width="70px"
+        >
+          <el-form-item label="账号" prop="username" style="width: 370px">
+            <el-input
+              v-model="formReg.username"
+              maxlength="10"
+              show-word-limit
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="密码" prop="password" style="width: 370px">
+            <el-input
+              v-model="formReg.password"
+              maxlength="20"
+              show-word-limit
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="用户名" prop="name" style="width: 370px">
+            <el-input
+              v-model="formReg.name"
+              maxlength="10"
+              show-word-limit
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="注册码" prop="regCode" style="width: 370px">
+            <el-input
+              v-model="formReg.regCode"
+              show-word-limit
+            ></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitUser">注 册</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -123,6 +178,12 @@ export default {
         password: "",
         code: "v9am",
       },
+      formReg: {
+        username: "",
+        password: "",
+        name: "",
+        regCode: "",
+      },
       // 表单校验
       rules: {
         username: [
@@ -146,6 +207,12 @@ export default {
             trigger: "blur",
           },
         ],
+      },
+      regRules: {
+        username: [{ required: true, message: "请输入账号", trigger: "blur" }],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+        regCode: [{ required: true, message: "请输入注册码", trigger: "blur" }],
       },
     };
   },
@@ -189,24 +256,7 @@ export default {
 
               const loginData = {
                 username: this.formLogin.username,
-                // password: this.formLogin.password
               };
-              // console.log(loginData);
-              // let date = new Date();
-              // date.setDate(date.getDate() + 7)
-              // Axios.post(
-              //   "http://localhost:3000/api/getUserName",
-              //   loginData
-              // ).then((res) => {
-              //   // console.log('this.formLogin.username',res.data.data[0].name);
-              //   // const data = {
-              //   //   name: res.data.data[0].name,
-              //   // };
-              //   // document.cookie = `name=${res.data.data[0].name}`;
-              //   // localStorage.setItem("userInfo", JSON.stringify(data));
-              //   // this.$store.dispatch("setName", res.data.data[0].name);
-              // });
-              // webStorage存储技术
 
               this.$router.replace(this.$route.query.redirect || "/");
             } else {
@@ -215,19 +265,6 @@ export default {
             // console.log('登陆成功 in page');
           });
 
-          // axios.post('http://localhost:3000/api/login', {
-          //         username: this.formLogin.username,
-          //         password: this.formLogin.password
-          //     }).then( (res)=> {
-          //     if(res.data.success){
-          //         console.log('登录成功');
-          // this.$router.replace(this.$route.query.redirect || '/')
-          //     }else{
-          //         console.log('登陆失败，账号密码错误');
-          //     }
-          //     }).catch(function (error) {
-          //         console.log(error);
-          //     });
         } else {
           // 登录表单校验失败
           this.$message.error("请输入账号或密码");
@@ -239,6 +276,76 @@ export default {
       if (data && data.name) {
         this.username = data.name;
       }
+    },
+    submitUser() {
+      // dayjs().format('YYYY-MM-DD dddd HH:mm:ss.SSS A')
+      this.$refs.formReg.validate(async (res, wtf) => {
+        if (res) {
+          const regTime = dayjs().format("YYYY-MM-DD HH:mm:ss");
+          let postData = {
+            username: this.formReg.username,
+            password: this.formReg.password,
+            name: this.formReg.name,
+            _regCode: this.formReg.regCode,
+            regTime:regTime,
+            status : '已使用',
+            user:this.formReg.username,
+            uuid:''
+          };
+          await Axios.post(`http://localhost:3000/api/checkregCode`, postData)
+            . then(async(res) => {
+              // console.log('res',res);
+              // console.log('res.data.data',res.data.data);
+              // console.log('res.data.data.success',res.data.success);
+              // console.log('res.data.data.status',res.data.data.status);
+
+              if(!res.data.data){return this.$message.error("注册码不存在");}
+              if (res.data.data.status=='已使用') {
+                return this.$message.error("该注册码已被使用！");
+              } else {
+                const reg = new RegExp("[\\u4E00-\\u9FFF]+", "g");
+                if (reg.test(this.formReg.username))
+                  return this.$message.error("账号不能包含汉字！");
+                postData.uuid = res.data.data.uuid
+                await Axios.post(`http://localhost:3000/api/addUser`, postData).then(async(res) => {
+                    if (!res.data.success) {
+                      this.$message.error("该账号已经被使用！");
+                    } else {
+                      await Axios.post(`http://localhost:3000/api/updateregCode`,postData
+                      ).then((res) => {
+                        console.log('updateregCode',res);
+                        this.$message.success("注册成功！");
+                        })
+                        .catch((e) => {
+                          this.$message.warning("操作失败", e);
+                        });
+
+                      this.dialogVisible = false;
+                      this.$refs.formReg.resetFields(); // 重置表单
+                    }
+                  })
+                  .catch((e) => {
+                    this.$message.warning("操作失败",e);
+                  });
+              }
+            })
+            .catch((e) => {
+              this.$message.warning("操作失败", e);
+            });
+
+          //
+
+          //   this.fileList = []
+        } else {
+          // console.log("error submit!!");
+          // return false;
+        }
+      });
+    },
+    addHandleClose(done) {
+      // 在关闭之前 清空表单
+      this.$refs.formReg.resetFields(); // 重置表单
+      done();
     },
   },
 };

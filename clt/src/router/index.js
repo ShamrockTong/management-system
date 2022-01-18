@@ -59,8 +59,13 @@ router.beforeEach(async (to, from, next) => {
     // 这里暂时将cookie里是否存有token作为验证是否登录的条件
     // 请根据自身业务需要修改
     const token = util.cookies.get('token')
+    // const uuid = util.cookies.get('uuid')
     if (token && token !== 'undefined') {
-      next()
+      // console.log('uuid',uuid)
+      // store.dispatch('d2admin/permission/GenerateRoutes', { uuid }).then(() => { // 生成可访问的路由表
+      //   router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+      //   next({ ...to, replace: true })})
+        next()  
     } else {
       // 没有登录的时候跳转到登录界面
       // 携带上登陆成功之后需要跳转的页面完整路径

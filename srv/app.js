@@ -22,11 +22,13 @@ app.use(urlencodedParser)
 const userRouter = require('./routers/user');
 const goodsListRouter = require('./routers/goodslist');
 const ordersRouter = require('./routers/orderslist')
+const regCodeRouter = require('./routers/regCode')
 
 // 前台用户流程
 app.use('/api',userRouter);
 app.use('/api',goodsListRouter);
 app.use('/api',ordersRouter)
+app.use('/api',regCodeRouter)
 
 const port = 3000;
 

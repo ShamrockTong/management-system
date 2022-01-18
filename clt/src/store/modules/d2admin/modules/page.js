@@ -1,7 +1,7 @@
 import { cloneDeep, uniq, get } from 'lodash'
 import router from '@/router'
 import setting from '@/setting.js'
-
+// console.log('router',router)
 // 判定是否需要缓存
 const isKeepAlive = data => get(data, 'meta.cache', false)
 
@@ -390,6 +390,7 @@ export default {
       }
       push(routes)
       state.pool = pool
+      // console.log('pool',state.pool);
     }
   }
 }

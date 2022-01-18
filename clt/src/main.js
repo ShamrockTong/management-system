@@ -10,7 +10,7 @@ import store from '@/store/index'
 // 菜单和路由设置
 import router from './router'
 import { menuHeader, menuAside } from '@/menu'
-import { frameInRoutes } from '@/router/routes'
+import { frameInRoutes,asyncRouterMap} from '@/router/routes'
 
 // 核心插件
 Vue.use(d2Admin)
