@@ -11,9 +11,14 @@ import store from '@/store/index'
 import router from './router'
 import { menuHeader, menuAside } from '@/menu'
 import { frameInRoutes,asyncRouterMap} from '@/router/routes'
+import SIdentify from './components/identify.vue' //注意引入路径
 
 // 核心插件
 Vue.use(d2Admin)
+
+// 验证码插件 
+
+Vue.use(SIdentify)
 
 new Vue({
   router,

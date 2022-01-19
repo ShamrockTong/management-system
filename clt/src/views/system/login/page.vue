@@ -24,7 +24,7 @@
           flex="dir:top main:center cross:center"
         >
           <!-- logo -->
-          <h2>电商通用后台管理系统</h2>
+          <h2>电商后台管理系统</h2>
           <!-- form -->
           <div class="page-login--form">
             <el-card shadow="never">
@@ -53,16 +53,23 @@
                     <i slot="prepend" class="fa fa-keyboard-o"></i>
                   </el-input>
                 </el-form-item>
-                <!-- <el-form-item prop="code">
+                <el-form-item prop="code">
                   <el-input
                     type="text"
                     v-model="formLogin.code"
-                    placeholder="验证码">
-                    <template slot="append">
-                      <img class="login-code" src="./image/login-code.png">
+                    placeholder="验证码"
+                  >
+                    <template slot="append" style="padding:0 !important;">
+                      <!-- <img class="login-code" src="./image/login-code.png"> -->
+                      <div class="coderight" @click="refreshCode">
+                        <SIdentify
+                          :identifyCode="identifyCode"
+                          @click="refreshCode"
+                        ></SIdentify>
+                      </div>
                     </template>
                   </el-input>
-                </el-form-item> -->
+                </el-form-item>
                 <el-button
                   size="default"
                   @click="submit"
@@ -74,7 +81,9 @@
               </el-form>
             </el-card>
             <p class="page-login--options" flex="main:justify cross:center">
-              <span @click="passwordDialogVisible=true"><d2-icon name="question-circle"/> 忘记密码</span>
+              <span @click="passwordDialogVisible = true"
+                ><d2-icon name="question-circle" /> 忘记密码</span
+              >
               <span @click="dialogVisible = true"
                 ><d2-icon name="address-card-o" /> 注册用户</span
               >
@@ -109,13 +118,19 @@
           </el-form-item>
           <el-form-item label="密码" prop="password" style="width: 370px">
             <el-input
+              type="password"
               v-model="formReg.password"
               maxlength="20"
               show-word-limit
             ></el-input>
           </el-form-item>
-          <el-form-item label="再次输入密码" prop="passwordAgain" style="width: 370px">
+          <el-form-item
+            label="再次输入密码"
+            prop="passwordAgain"
+            style="width: 370px"
+          >
             <el-input
+              type="password"
               v-model="formReg.passwordAgain"
               maxlength="20"
               show-word-limit
@@ -129,10 +144,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item label="注册码" prop="regCode" style="width: 370px">
-            <el-input
-              v-model="formReg.regCode"
-              show-word-limit
-            ></el-input>
+            <el-input v-model="formReg.regCode" show-word-limit></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -145,7 +157,7 @@
     </el-dialog>
 
     <!-- // 忘记密码 -->
-     <el-dialog
+    <el-dialog
       title="忘记密码"
       :visible.sync="passwordDialogVisible"
       width="440px"
@@ -166,22 +178,29 @@
           </el-form-item>
           <el-form-item label="旧密码" prop="password" style="width: 370px">
             <el-input
+               type="password"
               v-model="formPassword.password"
               show-word-limit
             ></el-input>
           </el-form-item>
           <el-form-item label="新密码" prop="newPassword" style="width: 370px">
             <el-input
+              type="password"
               v-model="formPassword.newPassword"
               maxlength="20"
               show-word-limit
             ></el-input>
           </el-form-item>
-          <el-form-item label="再次输入新密码" prop="newPasswordAgain" style="width: 370px">
+          <el-form-item
+            label="再次输入新密码"
+            prop="newPasswordAgain"
+            style="width: 370px"
+          >
             <el-input
               v-model="formPassword.newPasswordAgain"
               maxlength="20"
               show-word-limit
+              type="password"
             ></el-input>
           </el-form-item>
         </el-form>
@@ -196,110 +215,109 @@
 </template>
 
 <script>
-import dayjs from "dayjs";
-import { mapActions } from "vuex";
-import localeMixin from "@/locales/mixin.js";
-import axios from "axios";
-import service from "@/api/service.js";
-import Axios from "axios";
+import dayjs from 'dayjs'
+import { mapActions } from 'vuex'
+import localeMixin from '@/locales/mixin.js'
+import axios from 'axios'
+import service from '@/api/service.js'
+import Axios from 'axios'
+import SIdentify from '@/components/identify.vue'
 
 export default {
   mixins: [localeMixin],
-  data() {
+  components: {
+    SIdentify: SIdentify
+  },
+  data () {
     return {
       timeInterval: null,
-      username: "",
-      time: dayjs().format("HH:mm:ss"),
+      username: '',
+      identifyCode: '',
+      identifyCodes: '1234567890',
+      time: dayjs().format('HH:mm:ss'),
       // 快速选择用户
       dialogVisible: false,
-      passwordDialogVisible:false,
-      users: [
-        {
-          name: "Admin123",
-          username: "admin123",
-          password: "admin123",
-        },
-        {
-          name: "Editor",
-          username: "editor",
-          password: "editor",
-        },
-        {
-          name: "User1",
-          username: "user1",
-          password: "user1",
-        },
-      ],
+      passwordDialogVisible: false,
       // 表单
       formLogin: {
-        username: "",
-        password: "",
-        code: "v9am",
+        username: '',
+        password: '',
+        code: ''
       },
       formReg: {
-        username: "",
-        password: "",
-        passwordAgain:"",
-        name: "",
-        regCode: "",
+        username: '',
+        password: '',
+        passwordAgain: '',
+        name: '',
+        regCode: ''
       },
       formPassword: {
-        username: "",
-        password: "",
-        newPassword:"",
-        newPasswordAgain:""
+        username: '',
+        password: '',
+        newPassword: '',
+        newPasswordAgain: ''
       },
       // 表单校验
       rules: {
         username: [
           {
             required: true,
-            message: "请输入用户名",
-            trigger: "blur",
-          },
+            message: '请输入用户名',
+            trigger: 'blur'
+          }
         ],
         password: [
           {
             required: true,
-            message: "请输入密码",
-            trigger: "blur",
-          },
+            message: '请输入密码',
+            trigger: 'blur'
+          }
         ],
         code: [
           {
             required: true,
-            message: "请输入验证码",
-            trigger: "blur",
-          },
-        ],
+            message: '请输入验证码',
+            trigger: 'blur'
+          }
+        ]
       },
       regRules: {
-        username: [{ required: true, message: "请输入账号", trigger: "blur" }],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-        regCode: [{ required: true, message: "请输入注册码", trigger: "blur" }],
-        passwordAgain: [{ required: true, message: "请再次输入密码", trigger: "blur" }],
+        username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        name: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+        regCode: [{ required: true, message: '请输入注册码', trigger: 'blur' }],
+        passwordAgain: [
+          { required: true, message: '请再次输入密码', trigger: 'blur' }
+        ]
       },
       PasswordRules: {
-        username: [{ required: true, message: "请输入账号", trigger: "blur" }],
-        password: [{ required: true, message: "请输入旧密码", trigger: "blur" }],
-        newPassword: [{ required: true, message: "请输入新密码", trigger: "blur" }],
-        newPasswordAgain: [{ required: true, message: "请再次输入新密码", trigger: "blur" }],
-      },
-    };
+        username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+        password: [
+          { required: true, message: '请输入旧密码', trigger: 'blur' }
+        ],
+        newPassword: [
+          { required: true, message: '请输入新密码', trigger: 'blur' }
+        ],
+        newPasswordAgain: [
+          { required: true, message: '请再次输入新密码', trigger: 'blur' }
+        ]
+      }
+    }
   },
-  mounted() {
+  mounted () {
     this.timeInterval = setInterval(() => {
-      this.refreshTime();
-    }, 1000);
+      this.refreshTime()
+    }, 1000)
+    this.identifyCode = ''
+    this.makeCode(this.identifyCodes, 4)
   },
-  beforeDestroy() {
-    clearInterval(this.timeInterval);
+  beforeDestroy () {
+    clearInterval(this.timeInterval)
   },
   methods: {
-    ...mapActions("d2admin/account", ["login"]),
-    refreshTime() {
-      this.time = dayjs().format("HH:mm:ss");
+    ...mapActions('d2admin/account', ['login']),
+    refreshTime () {
+      this.time = dayjs().format('HH:mm:ss')
     },
     /**
      * @description 接收选择一个用户快速登录的事件
@@ -310,86 +328,94 @@ export default {
      */
     // 提交登录信息
 
-    submit() {
+    submit () {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
+          if(this.identifyCode !== this.formLogin.code) {
+            this.refreshCode()
+            this.formLogin.code = ""
+            return this.$message.error("验证码有误！") 
+          }
           // 登录
           // 注意 这里的演示没有传验证码
           // 具体需要传递的数据请自行修改代码
           this.login({
             username: this.formLogin.username,
-            password: this.formLogin.password,
+            password: this.formLogin.password
           }).then((res) => {
             // 重定向对象不存在则返回顶层路径
-            console.log("res", res);
+            console.log('res', res)
             if (res) {
-              this.$message.success("登陆成功");
+              this.$message.success('登陆成功')
 
-              this.$router.replace(this.$route.query.redirect || "/");
+              this.$router.replace(this.$route.query.redirect || '/')
             } else {
-              this.$message.error("账号或密码错误");
+              this.$message.error('账号或密码错误')
             }
             // console.log('登陆成功 in page');
-          });
-
+          })
         } else {
           // 登录表单校验失败
-          this.$message.error("请输入账号或密码");
+          this.$message.error('请输入账号或密码')
         }
-      });
+      })
     },
-    submitUser() {
+    submitUser () {
       // dayjs().format('YYYY-MM-DD dddd HH:mm:ss.SSS A')
       this.$refs.formReg.validate(async (res, wtf) => {
         if (res) {
-          if(this.formReg.password != this.formReg.passwordAgain) return this.$message.error('二次密码有误')
-          const regTime = dayjs().format("YYYY-MM-DD HH:mm:ss");
-          let postData = {
+          if (this.formReg.password != this.formReg.passwordAgain) { return this.$message.error('二次密码有误') }
+          const regTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
+          const postData = {
             username: this.formReg.username,
             password: this.formReg.password,
             name: this.formReg.name,
             _regCode: this.formReg.regCode,
-            regTime:regTime,
-            status : '已使用',
-            user:this.formReg.username,
-            uuid:''
-          };
-          await Axios.post(`http://localhost:3000/api/checkregCode`, postData)
-            . then(async(res) => {
-
-              if(!res.data.data){return this.$message.error("注册码不存在");}
-              if (res.data.data.status=='已使用') {
-                return this.$message.error("该注册码已被使用！");
+            regTime: regTime,
+            status: '已使用',
+            user: this.formReg.username,
+            uuid: ''
+          }
+          await Axios.post('http://localhost:3000/api/checkregCode', postData)
+            .then(async (res) => {
+              if (!res.data.data) {
+                return this.$message.error('注册码不存在')
+              }
+              if (res.data.data.status == '已使用') {
+                return this.$message.error('该注册码已被使用！')
               } else {
-                const reg = new RegExp("[\\u4E00-\\u9FFF]+", "g");
-                if (reg.test(this.formReg.username))
-                  return this.$message.error("账号不能包含汉字！");
+                const reg = new RegExp('[\\u4E00-\\u9FFF]+', 'g')
+                if (reg.test(this.formReg.username)) { return this.$message.error('账号不能包含汉字！') }
                 postData.uuid = res.data.data.uuid
-                await Axios.post(`http://localhost:3000/api/addUser`, postData).then(async(res) => {
+                await Axios.post('http://localhost:3000/api/addUser', postData)
+                  .then(async (res) => {
                     if (!res.data.success) {
-                      this.$message.error("该账号已经被使用！");
+                      this.$message.error('该账号已经被使用！')
                     } else {
-                      await Axios.post(`http://localhost:3000/api/updateregCode`,postData
-                      ).then((res) => {
-                        console.log('updateregCode',res);
-                        this.$message.success("注册成功！");
+                      await Axios.post(
+                        'http://localhost:3000/api/updateregCode',
+                        postData
+                      )
+                        .then((res) => {
+                          console.log('updateregCode', res)
+                          this.$message.success('注册成功！')
                         })
                         .catch((e) => {
-                          this.$message.warning("操作失败", e);
-                        });
+                          this.$message.warning('操作失败', e)
+                        })
 
-                      this.dialogVisible = false;
-                      this.$refs.formReg.resetFields(); // 重置表单
+                      this.dialogVisible = false
+                      this.$refs.formReg.resetFields() // 重置表单
                     }
                   })
                   .catch((e) => {
-                    this.$message.warning("操作失败",e);
-                  });
+                    this.$message.warning('操作失败', e)
+                  })
               }
             })
             .catch((e) => {
-              this.$message.warning("操作失败", e);
-            });
+              this.$message.warning('操作失败', e)
+            })
 
           //
 
@@ -398,56 +424,83 @@ export default {
           // console.log("error submit!!");
           // return false;
         }
-      });
+      })
     },
-     submitPassword() {
-      this.$refs.formPassword.validate(async(valid) => {
+    submitPassword () {
+      this.$refs.formPassword.validate(async (valid) => {
         if (valid) {
-          if(this.formPassword.newPassword != this.formPassword.newPasswordAgain) return this.$message.error('二次密码有误')
-         const postData = {
+          if (
+            this.formPassword.newPassword != this.formPassword.newPasswordAgain
+          ) { return this.$message.error('二次密码有误') }
+          const postData = {
             username: this.formPassword.username,
-            password:this.formPassword.password,
+            password: this.formPassword.password,
             newPassword: this.formPassword.newPassword
-          };
-          console.log("postData", postData);
+          }
+          console.log('postData', postData)
 
           //     const res = await this.$api.post('/build/add', postData)
-          await Axios.post(`http://localhost:3000/api/updateUserPassword`, postData)
+          await Axios.post(
+            'http://localhost:3000/api/updateUserPassword',
+            postData
+          )
             .then((res) => {
               if (!res.data.success) {
-                this.$message.error('修改失败！'+res.data.info);
+                this.$message.error('修改失败！' + res.data.info)
               } else {
-                this.$message.success("修改成功！");
-                this.$refs.formPassword.resetFields(); // 重置表单
-                this.passwordDialogVisible = false;
+                this.$message.success('修改成功！')
+                this.$refs.formPassword.resetFields() // 重置表单
+                this.passwordDialogVisible = false
               }
             })
             .catch((e) => {
-              this.$message.warning("操作失败", e);
-            });
+              this.$message.warning('操作失败', e)
+            })
           //     const { success } = res.data
           //     if (!success) return this.$message.warning('操作失败')
         } else {
-          console.log("error submit!!");
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     },
-    addHandleClose(done) {
+    addHandleClose (done) {
       // 在关闭之前 清空表单
-      this.$refs.formReg.resetFields(); // 重置表单
-      done();
+      this.$refs.formReg.resetFields() // 重置表单
+      done()
     },
-    PasswordHandleClose(done) {
+    PasswordHandleClose (done) {
       // 在关闭之前 清空表单
-      this.$refs.formPassword.resetFields(); // 重置表单
-      done();
+      this.$refs.formPassword.resetFields() // 重置表单
+      done()
     },
-    RegResetFields(){
+    RegResetFields () {
       this.$refs.formReg.resetFields()
+    },
+
+    // 验证码
+
+    ...mapActions('modules/account', ['settoken', 'setname']),
+    jumpregister: function () {
+      this.$router.push({ path: '/register' })
+    },
+    // 验证码
+    randomNum (min, max) {
+      return Math.floor(Math.random() * (max - min) + min)
+    },
+    refreshCode () {
+      this.identifyCode = ''
+      this.makeCode(this.identifyCodes, 4)
+    },
+    makeCode (o, l) {
+      for (let i = 0; i < l; i++) {
+        this.identifyCode +=
+          this.identifyCodes[this.randomNum(0, this.identifyCodes.length)]
+      }
+      console.log('identifyCode',this.identifyCode)
     }
-  },
-};
+  }
+}
 </script>
 
 <style lang="scss">
@@ -511,6 +564,9 @@ export default {
     // 输入框左边的图表区域缩窄
     .el-input-group__prepend {
       padding: 0px 14px;
+    }
+    .el-input-group__append{
+      padding: 0 !important;
     }
     .login-code {
       height: 40px - 2px;
@@ -598,6 +654,13 @@ export default {
         margin: 0 1em;
       }
     }
+  }
+
+  .coderight {
+    // margin: 400px auto;
+    width: 112px;
+    height: 38px;
+    padding: 0px !important;
   }
   // 背景
   // .circles {
