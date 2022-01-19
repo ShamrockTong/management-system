@@ -27,8 +27,18 @@ export default {
       if(res.success){
         util.cookies.set('uuid', res.user.uuid)
         util.cookies.set('token', res.token)
+        
+        // 判断权限
+        let _uuid= ''
+        if(res.user.uuid=='admin-uuid'){
+          _uuid = '管理员'
+        }else if(res.user.uuid=='user1-uuid'){
+          _uuid = '用户'
+        }else if(res.user.uuid=='editor-uuid'){
+          _uuid = '编辑'
+        }
         // 设置 vuex 用户信息
-        await dispatch('d2admin/user/set', { name: res.user.name}, { root: true })
+        await dispatch('d2admin/user/set', { name: res.user.name,uuid: _uuid}, { root: true })
         // 用户登录后从持久化数据加载一系列的设置
         await dispatch('load')
         return true

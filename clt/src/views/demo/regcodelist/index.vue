@@ -13,7 +13,7 @@
       <el-button type="primary" @click="reload" class="headerbutton"
         >刷新列表</el-button
       >
-      <el-button type="primary" @click="addNew" class="headerbutton"
+      <el-button type="danger" @click="addNew" class="headerbutton"
         >新增注册码</el-button
       >
     </template>
@@ -29,7 +29,7 @@
         @current-change="handlePageChange"
       />
     </div>
-    <el-table :data="regcodeList" stripe style="width: 100%">
+    <el-table :data="regcodeList" stripe style="width: 100%" height="100%">
       <el-table-column prop="id" label="ID" width="100"> </el-table-column>
       <el-table-column prop="code" label="注册码"> </el-table-column>
       <el-table-column prop="uuid" label="权限" width="180"> </el-table-column>

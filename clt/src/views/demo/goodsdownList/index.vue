@@ -19,14 +19,14 @@
     <div slot="footer">
       <el-pagination
         background
-        layout="prev, pager, next"
+        layout="prev, pager, next,jumper"
         :page-size="limit"
         :total="total"
         :current-page="this.page"
         @current-change="handlePageChange"
       />
     </div>
-    <el-table :data="goodsList" stripe style="width: 100%">
+    <el-table :data="goodsList" stripe style="width: 100%" height="100%">
       <el-table-column prop="id" label="ID" width="100"> </el-table-column>
       <el-table-column prop="name1" label="商品名称"> </el-table-column>
       <el-table-column prop="category" label="分类" width="180">

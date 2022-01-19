@@ -19,14 +19,14 @@
     <div slot="footer">
       <el-pagination
         background
-        layout="prev, pager, next"
+        layout="prev, pager, next,jumper"
         :page-size="limit"
         :total="total"
         :current-page="this.page"
         @current-change="handlePageChange"
       />
     </div>
-    <el-table :data="orderslist" stripe style="width: 100%">
+    <el-table :data="orderslist" stripe style="width: 100%" height="100%">
       <el-table-column prop="id" label="订单号" width="100"> </el-table-column>
       <el-table-column prop="orderstatus" label="订单状态" width="150">
       </el-table-column>

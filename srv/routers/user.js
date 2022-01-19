@@ -64,47 +64,27 @@ router.post('/login', async (req, res) => {
         if (user.password != password) return res.send({ success: false, info: '用户或密码错误' });
 
         // 生成一个token
-        const token = jwt.sign({
-            uid:user._id,
-        },'tong',{
-            expiresIn: 60*60*1000
-        })
+        const token = jwt.sign(
+            {
+                uid: user._id,
+            },
+            'tong',
+            {
+                expiresIn: 60 * 60 * 1000,
+            }
+        );
 
         // req.session.username = user.username;
-        res.send({ success: true, info: '登录成功',user,token});
+        res.send({ success: true, info: '登录成功', user, token });
     } catch (e) {
         res.send({ success: false, info: '登录失败' });
     }
 });
 
-// router.post('/getUserName', async (req, res) => {
-//     let { username } = req.body;
-//     console.log('username', username);
-//     let where = { username: username };
-//     try {
-//         let name = await User.find(where); // 分页查询
-//         // let count = await User.count()
-//         // let count = await News.count(where) // 获取符合条件的总数
-//         console.log('name', name);
-//         res.send({ success: true, info: '查询成功', data: name });
-//     } catch (e) {
-//         console.log(e);
-//         res.send({ success: false, info: '获取失败' });
-//     }
-// });
-
 router.post('/getAllusers', async (req, res) => {
     let { page, limit } = req.body;
     page = page || 1; // 当前第几页
     limit = limit || 50; // 单页返回的条数限制
-
-    // 初始化 查询条件
-    // let where = {  }
-    // 按名字查找
-    // if(title)  where.title = title
-
-    //
-    // const skip =  (page - 1) * limit; // 查询的起点（偏移量）
     try {
         let usersList = await User.find()
             .skip((page - 1) * parseInt(limit))
@@ -197,6 +177,29 @@ router.post('/searchUser', async (req, res) => {
     } catch (e) {
         console.log(e);
         res.send({ success: false, info: '获取失败' });
+    }
+});
+
+router.post('/updateUserPassword', async (req, res) => {
+    const { username, password, newPassword } = req.body;
+    console.log(username, password, newPassword);
+
+    const oldPassword = await User.findOne({ username });
+    console.log('oldPassword', oldPassword);
+    if (!oldPassword) return res.send({ success: false, info: '用户名不存在！' });
+    if (password == newPassword) return res.send({ success: false, info: '原密码与新密码相同！' });
+    if (oldPassword.password != password) return res.send({ success: false, info: '原密码有误!' });
+
+    if (oldPassword.password == password) {
+        let updateData = {
+            password: newPassword,
+        };
+        try {
+            await User.updateOne(oldPassword, updateData);
+            res.send({ success: true, info: '更新成功' });
+        } catch (e) {
+            res.send({ success: false, info: '更新失败' });
+        }
     }
 });
 

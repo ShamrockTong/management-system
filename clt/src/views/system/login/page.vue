@@ -24,7 +24,7 @@
           flex="dir:top main:center cross:center"
         >
           <!-- logo -->
-          <h1>电商通用后台管理系统</h1>
+          <h2>电商通用后台管理系统</h2>
           <!-- form -->
           <div class="page-login--form">
             <el-card shadow="never">
@@ -74,7 +74,7 @@
               </el-form>
             </el-card>
             <p class="page-login--options" flex="main:justify cross:center">
-              <span></span>
+              <span @click="passwordDialogVisible=true"><d2-icon name="question-circle"/> 忘记密码</span>
               <span @click="dialogVisible = true"
                 ><d2-icon name="address-card-o" /> 注册用户</span
               >
@@ -98,7 +98,7 @@
           ref="formReg"
           :rules="regRules"
           :model="formReg"
-          label-width="70px"
+          label-width="auto"
         >
           <el-form-item label="账号" prop="username" style="width: 370px">
             <el-input
@@ -110,6 +110,13 @@
           <el-form-item label="密码" prop="password" style="width: 370px">
             <el-input
               v-model="formReg.password"
+              maxlength="20"
+              show-word-limit
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="再次输入密码" prop="passwordAgain" style="width: 370px">
+            <el-input
+              v-model="formReg.passwordAgain"
               maxlength="20"
               show-word-limit
             ></el-input>
@@ -131,8 +138,58 @@
       </div>
 
       <span slot="footer" class="dialog-footer">
+        <el-button type="info" @click="RegResetFields">重 置</el-button>
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitUser">注 册</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- // 忘记密码 -->
+     <el-dialog
+      title="忘记密码"
+      :visible.sync="passwordDialogVisible"
+      width="440px"
+      :before-close="PasswordHandleClose"
+    >
+      <div>
+        <el-form
+          ref="formPassword"
+          :rules="PasswordRules"
+          :model="formPassword"
+          label-width="auto"
+        >
+          <el-form-item label="账号" prop="username" style="width: 370px">
+            <el-input
+              v-model="formPassword.username"
+              show-word-limit
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="旧密码" prop="password" style="width: 370px">
+            <el-input
+              v-model="formPassword.password"
+              show-word-limit
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="新密码" prop="newPassword" style="width: 370px">
+            <el-input
+              v-model="formPassword.newPassword"
+              maxlength="20"
+              show-word-limit
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="再次输入新密码" prop="newPasswordAgain" style="width: 370px">
+            <el-input
+              v-model="formPassword.newPasswordAgain"
+              maxlength="20"
+              show-word-limit
+            ></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="passwordDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitPassword">修 改</el-button>
       </span>
     </el-dialog>
   </div>
@@ -155,6 +212,7 @@ export default {
       time: dayjs().format("HH:mm:ss"),
       // 快速选择用户
       dialogVisible: false,
+      passwordDialogVisible:false,
       users: [
         {
           name: "Admin123",
@@ -181,8 +239,15 @@ export default {
       formReg: {
         username: "",
         password: "",
+        passwordAgain:"",
         name: "",
         regCode: "",
+      },
+      formPassword: {
+        username: "",
+        password: "",
+        newPassword:"",
+        newPasswordAgain:""
       },
       // 表单校验
       rules: {
@@ -213,6 +278,13 @@ export default {
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
         name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
         regCode: [{ required: true, message: "请输入注册码", trigger: "blur" }],
+        passwordAgain: [{ required: true, message: "请再次输入密码", trigger: "blur" }],
+      },
+      PasswordRules: {
+        username: [{ required: true, message: "请输入账号", trigger: "blur" }],
+        password: [{ required: true, message: "请输入旧密码", trigger: "blur" }],
+        newPassword: [{ required: true, message: "请输入新密码", trigger: "blur" }],
+        newPasswordAgain: [{ required: true, message: "请再次输入新密码", trigger: "blur" }],
       },
     };
   },
@@ -223,7 +295,6 @@ export default {
   },
   beforeDestroy() {
     clearInterval(this.timeInterval);
-    // this.getName()
   },
   methods: {
     ...mapActions("d2admin/account", ["login"]),
@@ -254,10 +325,6 @@ export default {
             if (res) {
               this.$message.success("登陆成功");
 
-              const loginData = {
-                username: this.formLogin.username,
-              };
-
               this.$router.replace(this.$route.query.redirect || "/");
             } else {
               this.$message.error("账号或密码错误");
@@ -271,16 +338,11 @@ export default {
         }
       });
     },
-    getName() {
-      const data = JSON.parse(localStorage.getItem("userInfo"));
-      if (data && data.name) {
-        this.username = data.name;
-      }
-    },
     submitUser() {
       // dayjs().format('YYYY-MM-DD dddd HH:mm:ss.SSS A')
       this.$refs.formReg.validate(async (res, wtf) => {
         if (res) {
+          if(this.formReg.password != this.formReg.passwordAgain) return this.$message.error('二次密码有误')
           const regTime = dayjs().format("YYYY-MM-DD HH:mm:ss");
           let postData = {
             username: this.formReg.username,
@@ -294,10 +356,6 @@ export default {
           };
           await Axios.post(`http://localhost:3000/api/checkregCode`, postData)
             . then(async(res) => {
-              // console.log('res',res);
-              // console.log('res.data.data',res.data.data);
-              // console.log('res.data.data.success',res.data.success);
-              // console.log('res.data.data.status',res.data.data.status);
 
               if(!res.data.data){return this.$message.error("注册码不存在");}
               if (res.data.data.status=='已使用') {
@@ -342,11 +400,52 @@ export default {
         }
       });
     },
+     submitPassword() {
+      this.$refs.formPassword.validate(async(valid) => {
+        if (valid) {
+          if(this.formPassword.newPassword != this.formPassword.newPasswordAgain) return this.$message.error('二次密码有误')
+         const postData = {
+            username: this.formPassword.username,
+            password:this.formPassword.password,
+            newPassword: this.formPassword.newPassword
+          };
+          console.log("postData", postData);
+
+          //     const res = await this.$api.post('/build/add', postData)
+          await Axios.post(`http://localhost:3000/api/updateUserPassword`, postData)
+            .then((res) => {
+              if (!res.data.success) {
+                this.$message.error('修改失败！'+res.data.info);
+              } else {
+                this.$message.success("修改成功！");
+                this.$refs.formPassword.resetFields(); // 重置表单
+                this.passwordDialogVisible = false;
+              }
+            })
+            .catch((e) => {
+              this.$message.warning("操作失败", e);
+            });
+          //     const { success } = res.data
+          //     if (!success) return this.$message.warning('操作失败')
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
     addHandleClose(done) {
       // 在关闭之前 清空表单
       this.$refs.formReg.resetFields(); // 重置表单
       done();
     },
+    PasswordHandleClose(done) {
+      // 在关闭之前 清空表单
+      this.$refs.formPassword.resetFields(); // 重置表单
+      done();
+    },
+    RegResetFields(){
+      this.$refs.formReg.resetFields()
+    }
   },
 };
 </script>
@@ -402,10 +501,12 @@ export default {
     // 卡片
     .el-card {
       margin-bottom: 15px;
+      box-shadow: 0 4px 4px 4px rgba(0, 0, 0, 0.03);
     }
     // 登录按钮
     .button-login {
       width: 100%;
+      box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.03);
     }
     // 输入框左边的图表区域缩窄
     .el-input-group__prepend {

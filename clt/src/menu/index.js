@@ -47,14 +47,13 @@ export const menuHeader = supplementPath([
     icon: 'cube',
     children: [
       { path: '/storagelist', title: '库存查询编辑' ,icon:'th'},
-      // { path: '/addorder', title: '订单添加' },
     ]
   },
   {
     title: '注册码',
-    icon: 'cube',
+    icon: 'check',
     children: [
-      { path: '/regcodelist', title: '注册码管理' ,icon:'th'},
+      { path: '/regcodelist', title: '注册码管理' ,icon:'registered'},
     ]
   }
 ])
